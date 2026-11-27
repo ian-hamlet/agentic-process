@@ -3,6 +3,9 @@ id: SPEC-nnn
 title: [Short feature name]
 status: draft          # draft | approved | done
 origin: new            # new | as-built (describes existing behaviour)
+capability: CAP-nnn    # from docs/product/problem.md
+quality: []            # QA-nnn this spec must meet
+constraints: []        # CON-nnn this spec must respect
 owner: [human name]
 approved_by:
 approved_on:

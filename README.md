@@ -1,6 +1,10 @@
 # Agentic Engineering Process (AEP)
 
-A portable, versioned engineering process for building software mostly with AI agents, packaged as a Claude Code plugin called `aep`. Install it in any repository, and its skills walk each change through:
+A portable, versioned engineering process for building software mostly with AI agents, packaged as a Claude Code plugin called `aep`. Install it in any repository. It starts with the problem, not the technology:
+
+**problem definition → target constraints → platform decision (ADR-001)**
+
+and then walks each feature through:
 
 **testable requirements → approved test plan → failing tests → TDD implementation → independent reviews → CI-gated pull request**
 
@@ -10,10 +14,13 @@ Hooks and CI enforce the important rules, so the process does not depend on anyo
 
 ## What a human does
 
-You make three decisions per work item. Everything else is delegated.
+You make three decisions per project and three per work item. Everything else is delegated.
 
 | Checkpoint | You run | You are deciding |
 |------------|---------|------------------|
+| Problem (once) | `/aep:approve problem` | This is the right problem, with the right outcomes and priorities |
+| Constraints (once) | `/aep:approve constraints` | These are the real requirements on how it is built |
+| Platform (once) | `/aep:approve adr ADR-001` | This technology fits the problem and constraints |
 | Spec | `/aep:approve spec SPEC-nnn` | These requirements and acceptance criteria are what I want |
 | Test plan | `/aep:approve test-plan SPEC-nnn` | These tests would prove it |
 | Merge | Merge the PR in GitHub | The evidence is good enough to integrate |
@@ -21,6 +28,11 @@ You make three decisions per work item. Everything else is delegated.
 ## The flow
 
 ```text
+/aep:frame                       install the process; no technology chosen yet
+/aep:problem                     interview → problem.md (outcomes, capabilities, quality attributes)
+/aep:constraints                 interview → constraints.md (where it runs, client standards, data, ...)
+/aep:platform                    compare candidates against constraints → ADR-001; YOU accept; then "apply"
+
 /aep:spec "<feature>"            agent drafts REQs + Given/When/Then ACs on feat/SPEC-nnn-slug; reviewer agent checks testability
 /aep:approve spec SPEC-nnn       YOU approve
 /aep:test-plan SPEC-nnn          agent maps every AC to named tests (level, technique, data)

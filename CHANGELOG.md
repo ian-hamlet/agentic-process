@@ -1,10 +1,19 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 — 2026-11-27
 
+**Problem first.** The problem and its target constraints are defined and approved before any platform is chosen; the platform is chosen, as ADR-001, before any feature is built.
+
+- New skills: `/aep:problem` (problem statement, outcomes, capabilities CAP, quality attributes QA, domain rules, information assets), `/aep:constraints` (CON entries across ten categories, each with source, hard/soft and how verified; confidentiality check against repository visibility), `/aep:platform` (candidates compared against hard constraints and weighted quality attributes in ADR-001; `apply` installs the chosen stack profile, skeleton and architecture documents).
+- `/aep:frame` is now platform-independent: it installs the process, a core CI gate (traceability, doc drift, secret scan), a core pre-commit hook and `.gitattributes`. It no longer creates foundation documents or a project skeleton.
+- `/aep:adopt` reconstructs problem, constraints and ADR-001 from existing code before writing as-built specs; baseline failures from the stack profile become DEF records.
+- `/aep:spec` refuses to start before problem and constraints are approved and ADR-001 is accepted and applied (rule C15). Specs name their capability, quality attributes and constraints.
+- New rules C15, C16. `next_id.py` supports CAP, QA, CON.
+- Stack profiles have a catalogue (`profiles/README.md`) and a "Suits" section; the .NET minimum version is a default that ADR-001 sets from constraints. D02 (line endings) moved to the core.
+- `vision.md` replaced by `docs/product/problem.md`.
 - GETTING-STARTED.md: one-page overview of the process, the documents it creates, and how to start a new project.
-- `/aep:frame` can frame an empty repository: it asks for the project name and application kind and creates the minimal .NET 10 solution and test project.
-- SETUP.md section 6: create a repository with `gh`, and branch protection matching what is used in practice (admins included, `gate` check added after the first green CI run).
+- SETUP.md section 6: create a repository with `gh`, and branch protection as used in practice (admins included, `gate` check added after the first green CI run).
+- Upgrading from 0.5.0: projects framed with 0.5.0 have no problem or constraints documents; run `/aep:problem` and `/aep:constraints`, then record the existing platform as ADR-001 (`/aep:platform`).
 
 ## 0.5.0 — 2026-11-27
 
