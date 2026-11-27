@@ -1,31 +1,34 @@
 ---
 name: adopt
-description: Bring existing code under the Agentic Engineering Process by writing as-built specs and characterization tests for behaviour that already exists. Use after /aep:frame in a repository that already has code without specs.
-argument-hint: "[area or feature to adopt, or blank to propose a plan]"
+description: Bring existing code under the Agentic Engineering Process - reconstruct the problem definition, constraints and platform decision from the code, apply the stack profile, then write as-built specs and characterization tests. Use after /aep:frame in a repository that already has code.
+argument-hint: "[area or feature to adopt, or blank to start]"
 disable-model-invocation: true
 ---
 # /aep:adopt — stage 0b
 
-The plugin root is `<this skill's base directory>/../..`. Templates are in `templates/`. The repo must be framed (`process/config.json` exists); if not, tell the human to run `/aep:frame` first.
+The plugin root is `<this skill's base directory>/../..`. The repo must be framed (`process/config.json` exists); if not, point to `/aep:frame` and stop.
 
-Existing code was written without specs, so nobody knows exactly what it promises. Adoption records what it does **today**, pins that with tests, and files anything that looks wrong. It does not change behaviour.
+Existing code was written without a problem definition or specs, so nobody knows exactly what it promises. Adoption records what exists **today**, pins it with tests, and files anything that looks wrong. It does not change behaviour.
 
-## 1. Plan (when no argument is given)
+## 1. Problem, constraints and platform, as built
+Do these once, in order, on `chore/aep-adopt` from `develop`:
+1. **Problem**: draft `docs/product/problem.md` (`origin: as-built`) from the README, code and any docs, then run the `/aep:problem` interview to correct and complete it. The human may decide the code solves the wrong problem; note that, and keep going.
+2. **Constraints**: run `/aep:constraints`. Record constraints the existing code already implies (runtime, OS, external services) and ask whether each is a real constraint or just an accident of the first implementation.
+3. **Platform**: draft ADR-001 from `templates/adr-platform.md` describing the platform the code already uses, with the hard-constraint table filled in. If the existing platform fails a hard constraint (for example, a runtime below the client's minimum version), say so in Consequences. The human approves it with `/aep:approve adr ADR-001`; then run `/aep:platform apply`.
+4. **Baseline failures**: applying the profile may make the existing code fail its rules (for example, a target-framework minimum). Do not fix them during adoption. File a DEF record per rule broken (`found_by: gate`) and tell the human the first work item is to fix it on its own `fix/DEF-nnn-…` branch, through the normal flow. Warnings that become errors: fix real problems; never suppress one without asking, and record agreed suppressions as DEC records.
+
+Each of the four steps ends with its own human approval; stop after each and say what is next.
+
+## 2. Plan the as-built specs
 1. Inventory the code: entry points and commands, modules, external calls, files read and written, configuration and secrets.
-2. Group behaviour into candidate specs of at most about 10 ACs each. Example grouping for a CLI: argument parsing; each command; each external API; each file format.
-3. Show the human a table: `| Candidate SPEC | Behaviour covered | Risk if wrong | Suggested order |`, highest risk first. Ask which to adopt first. Stop.
+2. Group behaviour into candidate specs of at most about 10 ACs each, mapped to capabilities in problem.md.
+3. Show the human `| Candidate SPEC | Capability | Behaviour covered | Risk if wrong | Suggested order |`, highest risk first. Ask which to adopt first. Stop.
 
-## 2. Adopt one area
-1. From `develop`, create branch `feat/SPEC-nnn-asbuilt-<slug>` (ID from `python3 scripts/process/next_id.py SPEC`).
-2. Write `docs/specs/SPEC-nnn-<slug>/spec.md` from the template with `origin: as-built`. REQs and ACs describe current behaviour precisely, with concrete values taken from the code (limits, defaults, formats, error messages). Reserve AC IDs with `next_id.py AC --count N`.
-3. For behaviour that looks like a bug, keep the AC describing what the code does now, and file a DEF record (`/aep:record defect`) linking it. Do not fix it here.
-4. Where behaviour is unclear or the code cannot be tested without refactoring (I/O mixed into logic, static clocks, hard-coded URLs), add an open question or a RISK record proposing a refactor as a future spec.
-5. Run the `requirements-reviewer` agent on the spec. Apply its rewrites that keep the spec faithful to the code; put the rest under Open questions.
-6. Commit `docs(SPEC-nnn): as-built spec`. Tell the human to review it and run `/aep:approve spec SPEC-nnn`. Stop.
+## 3. Adopt one area
+1. From `develop`, create `feat/SPEC-nnn-asbuilt-<slug>` (ID from `next_id.py SPEC`).
+2. Write the spec from the template with `origin: as-built`. REQs and ACs describe current behaviour precisely, with concrete values from the code (limits, defaults, formats, messages).
+3. Behaviour that looks like a bug: keep the AC describing what the code does now, and file a DEF record linking it. Code that cannot be tested without refactoring: add a RISK record proposing a refactor as a future spec.
+4. Run the `requirements-reviewer` agent; apply rewrites that keep the spec faithful to the code; the rest goes under Open questions.
+5. Commit `docs(SPEC-nnn): as-built spec`; the human approves with `/aep:approve spec SPEC-nnn`.
 
-## 3. After approval
-The rest is the normal flow, with one difference: tests are **characterization** tests, so they should pass immediately against existing code.
-- `/aep:test-plan SPEC-nnn`, then approval.
-- `/aep:tests SPEC-nnn`: a test that fails reveals a difference between the as-built spec and the code. Stop and ask the human which is right; file a DEF record if the code is wrong.
-- Skip `/aep:implement` unless a refactor is needed to make code testable; such a refactor must keep all tests green.
-- `/aep:review`, then `/aep:pr`.
+Then the normal flow, with characterization tests: `/aep:test-plan`, approval, `/aep:tests` (tests should **pass** against existing code; a failure shows a difference between spec and code: ask the human which is right), skip `/aep:implement` unless a refactor is needed, `/aep:review`, `/aep:pr`.

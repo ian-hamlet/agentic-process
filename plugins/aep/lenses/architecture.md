@@ -12,3 +12,5 @@ New projects, modules, folders or namespaces; new package dependencies; changes 
 - [ ] Public types and methods are the minimum needed; internals stay internal
 - [ ] Configuration is read in one place and passed in, not read deep inside logic
 - [ ] Names match the language of the spec (the same nouns and verbs)
+- [ ] Every hard constraint in docs/product/constraints.md that the change touches is still met (runtime version, target OS and CPU, banned dependencies, data location)
+- [ ] The change stays within the platform and architecture style accepted in ADR-001

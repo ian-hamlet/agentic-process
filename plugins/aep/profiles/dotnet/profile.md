@@ -1,20 +1,34 @@
 # .NET profile
 
-Used by `/aep:frame` when the repository contains `*.sln`, `*.slnx` or `*.csproj` files.
+Applied by `/aep:platform apply` when ADR-001 chooses `profile: dotnet`.
+
+## Suits
+
+| | |
+|---|---|
+| Languages and runtime | C# on .NET 10 or later |
+| Runs on | Windows, macOS, Linux; x64 and ARM64; containers; Azure, AWS and on-premises servers |
+| Application kinds | Console tools, background services, web APIs, desktop (Windows), libraries |
+| Weaker fit | Browser front ends (pair with a TypeScript profile), very small devices |
 
 ## Baseline rules
 
-These apply to every .NET project on top of the core rules in `process/PROCESS.md`.
+These apply to every .NET project on top of the core rules in `process/PROCESS.md`. The version numbers are defaults; ADR-001 sets them from the project's constraints (for example, a client standard of ".NET 10 or later").
 
 | ID | Rule | Enforced by |
 |----|------|-------------|
-| D01 | Every project targets .NET 10 or later (`net10.0`+); no .NET Framework | MSBuild target `AepCheckTargetFramework` in `Directory.Build.props` (fails every build, locally and in CI) |
-| D02 | Line endings are LF in the repository, so format checks agree on macOS and Windows | `.gitattributes` |
-| D03 | Every machine and CI build with the same SDK major version (10.0.x, latest patch), even when newer SDKs are installed | `global.json` (`rollForward: latestFeature`); CI reads the same file |
+| D01 | Every project targets .NET at or above the minimum version (default 10.0); no .NET Framework | MSBuild target `AepCheckTargetFramework` in `Directory.Build.props`, using `AepMinimumDotNetVersion` (fails every build, locally and in CI) |
+| D03 | Every machine and CI build with the same SDK major version, even when newer SDKs are installed | `global.json` (`rollForward: latestFeature`); CI reads the same file |
+
+(Line endings, formerly D02, are now handled for every project by `/aep:frame`'s `.gitattributes`.)
 
 Why D03: when several SDKs are installed, `dotnet` uses the newest unless `global.json` pins one. A newer SDK brings newer analyzers, which can raise warnings (errors, under C06) that CI does not see. Developers may have newer SDKs installed; they must also have the pinned one.
 
-To raise the baseline later, change `AepMinimumDotNetVersion` in the profile's `Directory.Build.props` and the version in `global.json`, release a new plugin version, and run `/aep:frame upgrade` in each project. Projects below the new baseline then fail to build until they are upgraded through the normal flow.
+**Settings driven by constraints**, applied by `/aep:platform apply` from ADR-001:
+- Minimum .NET version → `AepMinimumDotNetVersion` in `Directory.Build.props`, `version` in `global.json` (e.g. `10.0.100`), and `<TargetFramework>` in new projects (e.g. `net10.0`).
+- Target OS and CPU (e.g. Windows x64 only) → a `dotnet publish -r <rid>` step in CI, added to the workflow.
+
+To raise an organisation's default later, change the defaults here, release a new plugin version, and run `/aep:frame upgrade` in each project. Projects below the new minimum then fail to build until they are upgraded through the normal flow.
 
 ## Tools
 
@@ -71,7 +85,6 @@ Tests that reference types or methods that do not exist yet will not compile. In
 | `config.example.json` | `process/config.json` (paths and names filled in) |
 | `Directory.Build.props` | `Directory.Build.props` |
 | `editorconfig` | `.editorconfig` |
-| `gitattributes` | `.gitattributes` (then run `git add --renormalize .` once and commit) |
 | `global.json` | `global.json` |
 | `github/ci.yml` | `.github/workflows/ci.yml` |
 | `githooks/pre-commit` | `.githooks/pre-commit` (executable) |

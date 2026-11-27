@@ -7,13 +7,18 @@ argument-hint: "<what the feature or change should do>"
 
 The plugin root is `<this skill's base directory>/../..`. The spec template is `templates/spec.md`. Requirement rules are in `process/PROCESS.md` section 3.
 
+## 0. Preconditions
+Feature work starts only when the foundations are agreed (rule C15). Check, and if any fails say which and the command that fixes it, then stop:
+- `docs/product/problem.md` and `docs/product/constraints.md` have `status: approved` → else `/aep:problem`, `/aep:constraints`
+- `docs/architecture/adr/ADR-001-*.md` has `status: accepted` and `process/config.json` has a `stack` → else `/aep:platform`, `/aep:platform apply`
+
 ## 1. Branch
 1. Working tree must be clean. Switch to `develop`; if it has an upstream, `git pull --ff-only`.
 2. Get the ID: `python3 scripts/process/next_id.py SPEC`. Choose a short kebab-case slug.
 3. `git checkout -b feat/SPEC-nnn-<slug>`.
 
 ## 2. Understand before writing
-1. Read `CLAUDE.md`, `docs/vision.md`, `docs/architecture/invariants.md`, `docs/architecture/threat-model.md`, and any spec that covers nearby behaviour (search `docs/specs/`).
+1. Read `CLAUDE.md`, `docs/product/problem.md`, `docs/product/constraints.md`, `docs/architecture/invariants.md`, `docs/architecture/threat-model.md`, and any spec that covers nearby behaviour (search `docs/specs/`). Identify the capability (CAP-nnn) this spec delivers, and the quality attributes and constraints it must respect; record them in the spec's frontmatter.
 2. Read the code the change will touch, enough to know what exists.
 3. List what you would otherwise have to guess: inputs and their limits, error behaviour, defaults, what happens on external failure, what is out of scope. Ask the human about the ones that change behaviour, using AskUserQuestion (up to four questions, concrete options, your recommendation first). Do not guess; anything still unknown goes under Open questions.
 

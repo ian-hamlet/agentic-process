@@ -1,7 +1,8 @@
 # [Project name]
 
-[One sentence: what it does and for whom.]
+[One sentence: the problem it solves and for whom, from docs/product/problem.md.]
 This repo follows the Agentic Engineering Process (AEP) v[version]. The process is defined by the `aep` plugin: start work with `/aep:status`.
+Problem first: docs/product/problem.md and constraints.md come before platform (ADR-001), which comes before features.
 
 ## Invariants (never violate)
 See docs/architecture/invariants.md. The short form:
@@ -9,6 +10,7 @@ See docs/architecture/invariants.md. The short form:
 - [INV-2 in one line]
 
 ## Commands
+Build, test and format commands are set by `/aep:platform apply`; until then they read "set by /aep:platform".
 - Build:        [commands.build]
 - Test (fast):  [commands.test_fast]
 - Test (all):   [commands.test_all]
@@ -18,6 +20,8 @@ See docs/architecture/invariants.md. The short form:
 - Next ID:      python3 scripts/process/next_id.py AC
 
 ## Where things live
+- Problem and target constraints: docs/product/problem.md, constraints.md
+- Platform decision: docs/architecture/adr/ADR-001-platform.md
 - Specs and test plans: docs/specs/SPEC-nnn-slug/
 - Architecture, invariants, threat model, ADRs: docs/architecture/
 - Defects, risks, decisions: docs/records/
@@ -31,7 +35,8 @@ See docs/architecture/invariants.md. The short form:
 
 ## Never
 - Commit on, push to or merge into develop or main. Work on feat/, fix/ or chore/ branches.
-- Start a stage before the previous human approval (spec → test plan → tests).
+- Start a stage before the previous human approval (problem and constraints → platform → spec → test plan → tests).
+- Choose or change technology outside ADR-001, or break a hard constraint in constraints.md.
 - Change an approved spec's ACs or an approved test's assertion to make code pass.
 - Leave TODO, FIXME or not-implemented stubs in source.
 - Read .env files or anything under secrets/.
