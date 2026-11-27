@@ -9,5 +9,19 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <!-- Baseline (rule D01). Raise this when the organisation's baseline moves. -->
+    <AepMinimumDotNetVersion>10.0</AepMinimumDotNetVersion>
   </PropertyGroup>
+
+  <!-- Rule D01: every project targets .NET (not .NET Framework) at or above the baseline.
+       Target conditions are evaluated when the target runs, after the project file has set TargetFramework. -->
+  <Target Name="AepCheckTargetFramework" BeforeTargets="Build"
+          Condition="'$(TargetFramework)' != ''">
+    <Error Code="AEP-D01"
+           Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'"
+           Text="AEP rule D01: $(MSBuildProjectName) targets $(TargetFramework); projects must target .NET $(AepMinimumDotNetVersion) or later (e.g. net10.0)." />
+    <Error Code="AEP-D01"
+           Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionLessThan($([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')), '$(AepMinimumDotNetVersion)'))"
+           Text="AEP rule D01: $(MSBuildProjectName) targets $(TargetFramework); projects must target .NET $(AepMinimumDotNetVersion) or later (e.g. net10.0)." />
+  </Target>
 </Project>

@@ -102,7 +102,9 @@ The process is versioned like code (see [CHANGELOG.md](CHANGELOG.md)). Propose c
 
 ## Requirements
 
+See [SETUP.md](SETUP.md) for step-by-step setup on macOS (Apple Silicon) and Windows (x64).
+
 - Claude Code with plugin support
 - Python 3.9 or later (traceability, drift and hook scripts); PyYAML for the drift check
-- git, and a GitHub repository for CI
-- For the .NET profile: the .NET 8 SDK
+- git (Git for Windows on Windows), and a GitHub repository for CI
+- For the .NET profile: the .NET 10 SDK or later; projects must target `net10.0`+ (rule D01)

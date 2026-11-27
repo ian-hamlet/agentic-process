@@ -2,6 +2,17 @@
 
 Used by `/aep:frame` when the repository contains `*.sln`, `*.slnx` or `*.csproj` files.
 
+## Baseline rules
+
+These apply to every .NET project on top of the core rules in `process/PROCESS.md`.
+
+| ID | Rule | Enforced by |
+|----|------|-------------|
+| D01 | Every project targets .NET 10 or later (`net10.0`+); no .NET Framework | MSBuild target `AepCheckTargetFramework` in `Directory.Build.props` (fails every build, locally and in CI) |
+| D02 | Line endings are LF in the repository, so format checks agree on macOS and Windows | `.gitattributes` |
+
+To raise the baseline later, change `AepMinimumDotNetVersion` in the profile's `Directory.Build.props` and `dotnet-version` in `github/ci.yml`, release a new plugin version, and run `/aep:frame upgrade` in each project. Projects below the new baseline then fail to build until they are upgraded through the normal flow.
+
 ## Tools
 
 | Concern | Tool | Where it runs |
@@ -57,6 +68,7 @@ Tests that reference types or methods that do not exist yet will not compile. In
 | `config.example.json` | `process/config.json` (paths and names filled in) |
 | `Directory.Build.props` | `Directory.Build.props` |
 | `editorconfig` | `.editorconfig` |
+| `gitattributes` | `.gitattributes` (then run `git add --renormalize .` once and commit) |
 | `github/ci.yml` | `.github/workflows/ci.yml` |
 | `githooks/pre-commit` | `.githooks/pre-commit` (executable) |
 | `vscode/tasks.json`, `vscode/extensions.json` | `.vscode/` |

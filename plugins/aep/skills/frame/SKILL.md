@@ -38,7 +38,11 @@ Make `.githooks/pre-commit` executable and run `git config core.hooksPath .githo
 Add `.claude/settings.json` (merge if it exists) with permissions that deny reading `.env`, `.env.*` and `secrets/**`, and allow the project's build, test and format commands and read-only git commands.
 
 ## 4. Stack setup (dotnet)
-Follow the profile: ensure a solution file at the root includes every project; ensure a test project exists with xUnit, coverlet.msbuild, FsCheck.Xunit and NetArchTest.Rules. Run `dotnet build`. With warnings now errors, existing code may fail: fix real problems; never suppress a warning without asking the human, and record each agreed suppression as a DEC record (`/aep:record decision`).
+Follow the profile: ensure a solution file at the root includes every project; ensure a test project exists with xUnit, coverlet.msbuild, FsCheck.Xunit and NetArchTest.Rules. Run `dotnet build`.
+
+Existing code may now fail the profile's rules. Handle each failure explicitly, never silently:
+- **Baseline rules** (the profile's "Baseline rules" table, e.g. D01 target framework): do not fix them inside framing. File a DEF record per rule broken (`found_by: gate`), and tell the human that the first work item is to bring the code up to the baseline on its own `fix/DEF-nnn-…` branch, through the normal flow. Framing stops before step 6 in that case; the walking skeleton is completed on the fix branch.
+- **Warnings now treated as errors**: fix real problems; never suppress a warning without asking the human, and record each agreed suppression as a DEC record (`/aep:record decision`).
 
 ## 5. Foundation documents
 Create from the templates: `docs/vision.md`, `docs/architecture/overview.md`, `docs/architecture/invariants.md`, `docs/architecture/threat-model.md`.

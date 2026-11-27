@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 — 2026-11-27
+
+- **.NET baseline rule D01**: every project must target .NET 10 or later. Enforced by an MSBuild target in the profile's `Directory.Build.props`, so builds below the baseline fail locally and in CI. CI uses the .NET 10 SDK.
+- **Rule D02**: `.gitattributes` keeps LF line endings so format checks agree on macOS, Windows and CI.
+- `/aep:frame` no longer fixes baseline failures in existing code during framing; it files a DEF record and makes the upgrade the first work item.
+- **Windows support**: hooks and the git pre-commit hook find `python3`, `python` or `py`; VS Code tasks have Windows variants; SETUP.md has macOS and Windows sections.
+- Upgrading from 0.3.0: run `/aep:frame upgrade`.
+
 ## 0.3.0 — 2026-11-27
 
 First packaged version, derived from the Agentic Engineering Playbook v0.2.

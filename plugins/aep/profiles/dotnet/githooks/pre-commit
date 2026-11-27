@@ -1,7 +1,14 @@
 #!/bin/sh
 # AEP pre-commit hook (.NET). Applies to people and agents alike.
 # Enable once per clone:  git config core.hooksPath .githooks
+# Runs under git's own sh on macOS, Linux and Windows (Git for Windows).
 set -e
+
+PY=""
+for p in python3 python py; do
+  if command -v "$p" >/dev/null 2>&1 && "$p" -c "import sys" >/dev/null 2>&1; then PY="$p"; break; fi
+done
+if [ -z "$PY" ]; then echo "pre-commit: Python 3.9+ not found (see SETUP.md)"; exit 1; fi
 
 echo "pre-commit: format check"
 dotnet format --verify-no-changes || {
@@ -9,11 +16,13 @@ dotnet format --verify-no-changes || {
 }
 
 echo "pre-commit: traceability"
-python3 scripts/process/traceability.py >/dev/null || {
-  python3 scripts/process/traceability.py; exit 1;
+"$PY" scripts/process/traceability.py >/dev/null || {
+  "$PY" scripts/process/traceability.py; exit 1;
 }
 
 if command -v gitleaks >/dev/null 2>&1; then
   echo "pre-commit: secret scan"
   gitleaks protect --staged --redact
+else
+  echo "pre-commit: gitleaks not installed, secret scan skipped (CI still runs it)"
 fi
