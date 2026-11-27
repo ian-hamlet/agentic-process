@@ -50,18 +50,17 @@ Everything is plain Markdown in git, so documents are reviewed, versioned and me
 
 ## Starting a new project
 
+A printable step-by-step version, with questions to think about beforehand, is in [START-HERE.md](START-HERE.md).
+
 1. **Set up your machine** once: [SETUP.md](SETUP.md), section 1 (macOS) or 2 (Windows), then 3 to 5.
 2. **Create the repository** with a `develop` branch and protect `main` and `develop`: SETUP.md section 6. If the client's constraints will be confidential, make the repository private (and use a paid GitHub plan for branch protection).
 3. **Open it in VS Code** and, in the Claude Code panel, run `/aep:frame`. Push the branch, open the pull request, merge it.
 4. Run `/aep:problem`, then `/aep:constraints`, then `/aep:platform`, approving each as you go.
 5. Start the first feature with `/aep:spec "<a must-have capability>"`.
 
-## The two repositories today
+## Where the process lives
 
-| Repository | What it is | State |
-|------------|-----------|-------|
-| [agentic-process](https://github.com/ian-hamlet/agentic-process) | The `aep` plugin: process, commands, agents, templates, hooks, stack profiles | Public; protected |
-| [eddi-monitor](https://github.com/ian-hamlet/eddi-monitor) | First trial project; code written by an agent before the process existed | Not yet framed; public; protected |
+[agentic-process](https://github.com/ian-hamlet/agentic-process) holds the `aep` plugin: process, commands, agents, templates, hooks and stack profiles. Each project is its own repository and uses the plugin.
 
 ## Good to know
 
