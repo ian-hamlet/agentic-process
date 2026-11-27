@@ -1,0 +1,16 @@
+{
+  "name": "agentic-process",
+  "owner": {
+    "name": "Ian Hamlet"
+  },
+  "metadata": {
+    "description": "Agentic Engineering Process: a portable, versioned process for building software mostly with AI agents."
+  },
+  "plugins": [
+    {
+      "name": "aep",
+      "source": "./plugins/aep",
+      "description": "Testable requirements, approved test plans, test-first TDD, focused agent reviews and a CI gate, driven by skills and enforced by hooks."
+    }
+  ]
+}

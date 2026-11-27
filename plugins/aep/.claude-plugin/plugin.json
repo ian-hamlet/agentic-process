@@ -1,0 +1,9 @@
+{
+  "name": "aep",
+  "version": "0.3.0",
+  "description": "Agentic Engineering Process: testable requirements, approved test plans, test-first TDD, focused agent reviews and a CI gate.",
+  "author": {
+    "name": "Ian Hamlet"
+  },
+  "keywords": ["process", "requirements", "tdd", "testing", "ci", "review", "traceability"]
+}

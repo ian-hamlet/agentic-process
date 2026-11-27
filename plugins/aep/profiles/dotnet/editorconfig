@@ -1,0 +1,23 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml,props,csproj,md}]
+indent_size = 2
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_braces = true:warning
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_prefer_conditional_expression_over_return = false:none
+dotnet_diagnostic.IDE0005.severity = warning   # unnecessary using
+
+# Test method names start with AC IDs (AC_001_...), so allow underscores there.
+[tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none

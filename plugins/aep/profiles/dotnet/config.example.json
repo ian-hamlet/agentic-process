@@ -1,0 +1,22 @@
+{
+  "process_version": "0.3.0",
+  "stack": "dotnet",
+  "commands": {
+    "build": "dotnet build",
+    "test_fast": "dotnet test --filter \"Category!=Integration\"",
+    "test_all": "dotnet test",
+    "format_check": "dotnet format --verify-no-changes",
+    "format_fix": "dotnet format",
+    "run": "dotnet run --project src/<Name> --"
+  },
+  "paths": {
+    "specs": "docs/specs",
+    "source": ["src"],
+    "tests": ["tests"]
+  },
+  "branches": {
+    "integration": "develop",
+    "release": "main"
+  },
+  "coverage_threshold": 80
+}

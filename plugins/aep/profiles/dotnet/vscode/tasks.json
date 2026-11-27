@@ -1,0 +1,44 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "dotnet build",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test (fast)",
+      "type": "shell",
+      "command": "dotnet test --filter \"Category!=Integration\"",
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test (all, with coverage)",
+      "type": "shell",
+      "command": "dotnet test -p:CollectCoverage=true",
+      "group": "test",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "format",
+      "type": "shell",
+      "command": "dotnet format",
+      "problemMatcher": []
+    },
+    {
+      "label": "traceability matrix",
+      "type": "shell",
+      "command": "python3 scripts/process/traceability.py --matrix",
+      "problemMatcher": []
+    },
+    {
+      "label": "local gate",
+      "type": "shell",
+      "command": "dotnet format --verify-no-changes && dotnet build && dotnet test && python3 scripts/process/traceability.py && python3 scripts/process/doc_drift.py",
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

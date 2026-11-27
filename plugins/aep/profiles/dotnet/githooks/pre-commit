@@ -1,0 +1,19 @@
+#!/bin/sh
+# AEP pre-commit hook (.NET). Applies to people and agents alike.
+# Enable once per clone:  git config core.hooksPath .githooks
+set -e
+
+echo "pre-commit: format check"
+dotnet format --verify-no-changes || {
+  echo "Formatting problems. Run: dotnet format"; exit 1;
+}
+
+echo "pre-commit: traceability"
+python3 scripts/process/traceability.py >/dev/null || {
+  python3 scripts/process/traceability.py; exit 1;
+}
+
+if command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: secret scan"
+  gitleaks protect --staged --redact
+fi

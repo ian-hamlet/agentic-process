@@ -1,0 +1,72 @@
+# AEP automated gate for .NET (process stage 6). Every step is required for merge.
+# Set branch protection on develop and main to require the "gate" check.
+name: ci
+
+on:
+  push:
+    branches: [develop, main, "feat/**", "fix/**", "chore/**"]
+  pull_request:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_NOLOGO: true
+      COVERAGE_THRESHOLD: 80   # keep equal to coverage_threshold in process/config.json
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # gitleaks scans history
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Format (C06)
+        run: dotnet format --verify-no-changes --no-restore
+
+      - name: Build, warnings are errors (C06)
+        run: dotnet build --no-restore --configuration Release
+
+      - name: No placeholders in source (C07)
+        run: |
+          if grep -rnE "TODO|FIXME|NotImplementedException" --include="*.cs" src; then
+            echo "::error::Placeholders found in src/ (rule C07)"; exit 1
+          fi
+
+      - name: Tests with coverage
+        run: >
+          dotnet test --no-build --configuration Release
+          -p:CollectCoverage=true -p:Threshold=${{ env.COVERAGE_THRESHOLD }}
+          -p:ThresholdType=line -p:ThresholdStat=total
+
+      - name: Traceability (C01-C04)
+        run: python3 scripts/process/traceability.py --matrix
+
+      - name: Doc drift (C05)
+        run: |
+          pip install --quiet pyyaml
+          python3 scripts/process/doc_drift.py
+
+      - name: Vulnerable packages (C12)
+        run: |
+          dotnet list package --vulnerable --include-transitive 2>&1 | tee vulnerable.txt
+          if grep -q "has the following vulnerable packages" vulnerable.txt; then
+            echo "::error::Vulnerable packages found (rule C12)"; exit 1
+          fi
+
+      - name: Secret scan (C11)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
