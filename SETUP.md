@@ -6,7 +6,7 @@ There are two setup routes: **macOS on Apple Silicon** (section 1) and **Windows
 
 | Requirement | Version |
 |-------------|---------|
-| .NET SDK | 10 or later. Projects must target `net10.0` or later; the build fails otherwise (rule D01). |
+| .NET SDK | **10** must be installed: projects pin it in `global.json` (rule D03) and target `net10.0` or later (rule D01). Newer SDKs (11+) may be installed alongside; they are not used unless a project's `global.json` asks for them. |
 | Python | 3.9 or later, with PyYAML |
 | git | Any recent version. On Windows, Git for Windows (Claude Code and the git hooks use its `sh`). |
 | GitHub CLI (`gh`) | Any recent version |
@@ -23,7 +23,7 @@ Open **Terminal**.
 | Homebrew | Install from https://brew.sh | `brew --version` |
 | git | `brew install git` | `git --version` |
 | GitHub CLI | `brew install gh` | `gh --version` |
-| .NET 10 SDK | `brew install --cask dotnet-sdk` | `dotnet --list-sdks` shows 10.x |
+| .NET 10 SDK | `brew install --cask dotnet-sdk@10` (plain `dotnet-sdk` installs the newest, e.g. 11) | `dotnet --list-sdks` shows 10.x |
 | PyYAML | `python3 -m pip install --user pyyaml` | `python3 -c "import yaml"` |
 | gitleaks | `brew install gitleaks` | `gitleaks version` |
 | VS Code | `brew install --cask visual-studio-code` | `code --version` |
@@ -33,7 +33,7 @@ Open **Terminal**.
 
 ```bash
 sudo rm -rf /usr/local/share/dotnet /etc/paths.d/dotnet
-brew install --cask dotnet-sdk
+brew install --cask dotnet-sdk@10
 # open a new terminal
 dotnet --list-sdks
 ```

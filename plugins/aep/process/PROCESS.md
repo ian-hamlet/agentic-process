@@ -1,4 +1,4 @@
-# Agentic Engineering Process (AEP) v0.4
+# Agentic Engineering Process (AEP) v0.5
 
 This is the normative process: what must happen, who does it, and what enforces it. The reasoning behind it is in [docs/PLAYBOOK.md](../docs/PLAYBOOK.md). Every skill in this plugin implements one step of this document.
 

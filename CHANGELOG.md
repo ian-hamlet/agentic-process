@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0 — 2026-11-27
+
+- **Rule D03**: projects pin the .NET 10 SDK in `global.json` (`rollForward: latestFeature`), so machines with newer SDKs (e.g. 11) build exactly as CI does. CI reads the SDK version from the same file instead of its own setting.
+- SETUP.md: macOS installs `dotnet-sdk@10`; newer SDKs may sit alongside.
+- Upgrading from 0.4.0: run `/aep:frame upgrade`.
+
 ## 0.4.0 — 2026-11-27
 
 - **.NET baseline rule D01**: every project must target .NET 10 or later. Enforced by an MSBuild target in the profile's `Directory.Build.props`, so builds below the baseline fail locally and in CI. CI uses the .NET 10 SDK.
