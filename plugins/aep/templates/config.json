@@ -1,0 +1,15 @@
+{
+  "process_version": "0.6.0",
+  "stack": null,
+  "commands": {},
+  "paths": {
+    "specs": "docs/specs",
+    "source": ["src"],
+    "tests": ["tests"]
+  },
+  "branches": {
+    "integration": "develop",
+    "release": "main"
+  },
+  "coverage_threshold": 80
+}

@@ -1,0 +1,38 @@
+# AEP core gate: the checks that need no platform. Installed by /aep:frame.
+# /aep:platform replaces this file with the chosen profile's workflow, which includes these steps.
+# Branch protection on develop and main should require the "gate" check once it has passed once.
+name: ci
+
+on:
+  push:
+    branches: [develop, main, "feat/**", "fix/**", "chore/**"]
+  pull_request:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # gitleaks scans history
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Traceability (C01-C04)
+        run: python3 scripts/process/traceability.py --matrix
+
+      - name: Doc drift (C05)
+        run: |
+          pip install --quiet pyyaml
+          python3 scripts/process/doc_drift.py
+
+      - name: Secret scan (C11)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

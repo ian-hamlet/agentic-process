@@ -1,5 +1,5 @@
 {
-  "process_version": "0.4.0",
+  "process_version": "0.6.0",
   "stack": "dotnet",
   "commands": {
     "build": "dotnet build",

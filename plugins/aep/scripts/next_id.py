@@ -7,7 +7,7 @@ are defined are scanned, so examples in other documents do not count.
 Usage:
   python3 scripts/process/next_id.py SPEC
   python3 scripts/process/next_id.py AC --count 5     # five consecutive IDs
-Prefixes: SPEC REQ AC ADR DEF RISK DEC
+Prefixes: CAP QA CON SPEC REQ AC ADR DEF RISK DEC
 """
 import argparse
 import json
@@ -28,7 +28,7 @@ def find_root():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("prefix", choices=["SPEC", "REQ", "AC", "ADR", "DEF", "RISK", "DEC"])
+    ap.add_argument("prefix", choices=["CAP", "QA", "CON", "SPEC", "REQ", "AC", "ADR", "DEF", "RISK", "DEC"])
     ap.add_argument("--count", type=int, default=1)
     args = ap.parse_args()
 
@@ -38,6 +38,9 @@ def main():
     paths = cfg.get("paths", {})
     specs = paths.get("specs", "docs/specs")
     where = {
+        "CAP": ["docs/product"],
+        "QA": ["docs/product"],
+        "CON": ["docs/product"],
         "SPEC": [specs],
         "REQ": [specs],
         "AC": [specs] + paths.get("tests", ["tests"]),
