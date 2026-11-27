@@ -6,6 +6,8 @@ A portable, versioned engineering process for building software mostly with AI a
 
 Hooks and CI enforce the important rules, so the process does not depend on anyone remembering it.
 
+**New here?** Read [GETTING-STARTED.md](GETTING-STARTED.md) (one page), then [SETUP.md](SETUP.md) for macOS or Windows.
+
 ## What a human does
 
 You make three decisions per work item. Everything else is delegated.

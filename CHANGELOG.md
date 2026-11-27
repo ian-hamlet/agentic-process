@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- GETTING-STARTED.md: one-page overview of the process, the documents it creates, and how to start a new project.
+- `/aep:frame` can frame an empty repository: it asks for the project name and application kind and creates the minimal .NET 10 solution and test project.
+- SETUP.md section 6: create a repository with `gh`, and branch protection matching what is used in practice (admins included, `gate` check added after the first green CI run).
+
 ## 0.5.0 — 2026-11-27
 
 - **Rule D03**: projects pin the .NET 10 SDK in `global.json` (`rollForward: latestFeature`), so machines with newer SDKs (e.g. 11) build exactly as CI does. CI reads the SDK version from the same file instead of its own setting.

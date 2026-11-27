@@ -104,34 +104,41 @@ On Windows, give the Windows path of the clone, e.g. `/plugin marketplace add C:
 
 Restart the session, then type `/aep:` and check that the skills appear. To update later: `git pull` in the plugin repository, then `/plugin marketplace update agentic-process`.
 
-## 6. Branch protection for each project repository
+## 6. Create a project repository
 
-Agents never merge; GitHub enforces that through branch protection. On GitHub Free, branch protection works only on **public** repositories. A private repository needs GitHub Pro, Team or Enterprise.
-
-For each of `develop` and `main` (the `gate` check exists once CI has run, but it can be named in advance). In Git Bash or macOS Terminal:
+Run these in macOS Terminal or Git Bash on Windows. Replace `<owner>` and `<repo>`.
 
 ```bash
-gh api -X PUT repos/<owner>/<repo>/branches/develop/protection --input - <<'EOF'
+cd ~/development                          # Windows: cd /c/dev
+gh repo create <owner>/<repo> --public --add-readme --clone
+cd <repo>
+git checkout -b develop
+git push -u origin develop
+```
+
+**Protect `main` and `develop`.** Agents never merge; GitHub enforces that. On GitHub Free this works only for **public** repositories (private ones need GitHub Pro, Team or Enterprise).
+
+```bash
+for b in main develop; do
+gh api -X PUT repos/<owner>/<repo>/branches/$b/protection --input - >/dev/null <<'EOF' && echo "$b protected"
 {
-  "required_status_checks": { "strict": true, "contexts": ["gate"] },
-  "enforce_admins": false,
+  "required_status_checks": null,
+  "enforce_admins": true,
   "required_pull_request_reviews": { "required_approving_review_count": 0 },
   "restrictions": null,
   "allow_force_pushes": false,
   "allow_deletions": false
 }
 EOF
+done
 ```
 
-`required_approving_review_count` is 0 because on a one-person project you cannot approve your own pull request; the PR is still required, and you still merge it yourself. Alternatively use the web page: repository → Settings → Branches → Add rule.
+- `enforce_admins: true`: the rules apply to the owner too, because agents push with the owner's credential. From now on every change reaches `develop` through a pull request.
+- `required_approving_review_count: 0`: GitHub does not let you approve your own PR; the PR is still required and you still merge it.
+- No required check yet: the CI `gate` check arrives with `/aep:frame`.
 
-## 7. Start a project
+**After the first green CI run**, require the `gate` check: run the same loop with `"required_status_checks": { "strict": true, "contexts": ["gate"] }`.
 
-In the project repository, with a clean working tree:
+## 7. Bring in the process
 
-```bash
-git checkout develop || git checkout -b develop
-git push -u origin develop
-```
-
-Then in Claude Code: `/aep:frame`, and `/aep:adopt` if the project already has code. `/aep:status` always says what to do next.
+In VS Code, open the project folder, open the Claude Code panel, and run `/aep:frame`. Add `/aep:adopt` if the repository already had code. `/aep:status` always says what to do next. See [GETTING-STARTED.md](GETTING-STARTED.md) for the whole flow.
