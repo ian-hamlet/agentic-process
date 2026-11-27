@@ -18,6 +18,8 @@ If the argument is `upgrade`, skip to **Upgrade** at the end.
 ## 2. Pick the stack profile
 Detect the stack: `*.sln`, `*.slnx` or `*.csproj` → `dotnet`. Only the `dotnet` profile exists in this version. For any other stack, stop and tell the human; offer to draft a new profile in the plugin by following `profiles/dotnet/profile.md` as the model.
 
+**New repository with no code yet:** ask the human, with AskUserQuestion, for the project name, which profile to use (only `dotnet` today) and the kind of application (console, web API, library, worker). Then create the minimal structure the profile describes, targeting the baseline (`net10.0`): the solution at the root, one source project under `src/`, one test project under `tests/`. Write no application logic; behaviour arrives only through specs.
+
 Read `profiles/<stack>/profile.md` fully.
 
 ## 3. Create the process files
