@@ -10,7 +10,7 @@ and then walks each feature through:
 
 Hooks and CI enforce the important rules, so the process does not depend on anyone remembering it.
 
-**New here?** Read [GETTING-STARTED.md](GETTING-STARTED.md) (one page), then [SETUP.md](SETUP.md) for macOS or Windows.
+**New here?** Read [GETTING-STARTED.md](GETTING-STARTED.md) (one page), then [SETUP.md](SETUP.md) for macOS or Windows. **Starting a project?** Print [START-HERE.md](START-HERE.md) and work through it.
 
 ## What a human does
 
