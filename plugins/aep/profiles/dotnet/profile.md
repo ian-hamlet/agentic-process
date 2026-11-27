@@ -10,8 +10,11 @@ These apply to every .NET project on top of the core rules in `process/PROCESS.m
 |----|------|-------------|
 | D01 | Every project targets .NET 10 or later (`net10.0`+); no .NET Framework | MSBuild target `AepCheckTargetFramework` in `Directory.Build.props` (fails every build, locally and in CI) |
 | D02 | Line endings are LF in the repository, so format checks agree on macOS and Windows | `.gitattributes` |
+| D03 | Every machine and CI build with the same SDK major version (10.0.x, latest patch), even when newer SDKs are installed | `global.json` (`rollForward: latestFeature`); CI reads the same file |
 
-To raise the baseline later, change `AepMinimumDotNetVersion` in the profile's `Directory.Build.props` and `dotnet-version` in `github/ci.yml`, release a new plugin version, and run `/aep:frame upgrade` in each project. Projects below the new baseline then fail to build until they are upgraded through the normal flow.
+Why D03: when several SDKs are installed, `dotnet` uses the newest unless `global.json` pins one. A newer SDK brings newer analyzers, which can raise warnings (errors, under C06) that CI does not see. Developers may have newer SDKs installed; they must also have the pinned one.
+
+To raise the baseline later, change `AepMinimumDotNetVersion` in the profile's `Directory.Build.props` and the version in `global.json`, release a new plugin version, and run `/aep:frame upgrade` in each project. Projects below the new baseline then fail to build until they are upgraded through the normal flow.
 
 ## Tools
 
@@ -69,6 +72,7 @@ Tests that reference types or methods that do not exist yet will not compile. In
 | `Directory.Build.props` | `Directory.Build.props` |
 | `editorconfig` | `.editorconfig` |
 | `gitattributes` | `.gitattributes` (then run `git add --renormalize .` once and commit) |
+| `global.json` | `global.json` |
 | `github/ci.yml` | `.github/workflows/ci.yml` |
 | `githooks/pre-commit` | `.githooks/pre-commit` (executable) |
 | `vscode/tasks.json`, `vscode/extensions.json` | `.vscode/` |
